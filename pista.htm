@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>MicroDSI · Pistas</title>
+  <link rel="stylesheet" href="assets/styles.css"/>
+</head>
+<body>
+  <header class="topbar">
+    <div class="row">
+      <div class="brand">
+        <b>MicroDSI</b>
+        <span>M2-S10 · Mini web de trabajo</span>
+      </div>
+
+      <nav class="nav">
+        <a class="btn" href="index.html">Inicio</a>
+        <a class="btn" href="feed.html">Feed</a>
+        <a class="btn is-active" href="pista.htm">Pistas</a>
+        <a class="btn" href="lab.html">Lab</a>
+        <div class="trackPicker">
+          <small>Track</small>
+          <select id="trackSel">
+            <option value="itsm">ITSM Triage</option>
+            <option value="hr">HR</option>
+            <option value="proc">Procurement</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="panel">
+      <b>Progreso</b>
+      <div class="progress"><i id="prog"></i></div>
+      <div id="progLabel" class="footerHint">0/0 pistas completas</div>
+      <div id="pistaSavedAt" class="saveStatus">Sin guardar aun.</div>
+      <span class="footerHint">
+        Desplázate horizontalmente (trackpad/rueda). Cada pista pide una respuesta breve con 1 dato o condición.
+      </span>
+    </div>
+  </main>
+
+  <main class="container" style="padding-top:0">
+    <div class="panel pistaControls">
+      <button class="btn" id="pPrev" type="button">Anterior</button>
+      <span id="pStep" class="pistaStep">Paso 1 de 1</span>
+      <button class="btn primary" id="pNext" type="button">Siguiente</button>
+    </div>
+  </main>
+
+  <main id="pistaWrap" class="pistaWrap"></main>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>

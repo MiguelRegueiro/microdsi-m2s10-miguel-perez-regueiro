@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>MicroDSI · Lab</title>
+  <link rel="stylesheet" href="assets/styles.css"/>
+</head>
+<body>
+  <header class="topbar">
+    <div class="row">
+      <div class="brand">
+        <b>MicroDSI</b>
+        <span>M2-S10 · Mini web de trabajo</span>
+      </div>
+      <nav class="nav">
+        <a class="btn" href="index.html">Inicio</a>
+        <a class="btn" href="feed.html">Feed</a>
+        <a class="btn" href="pista.htm">Pistas</a>
+        <a class="btn is-active" href="lab.html">Lab</a>
+        <div class="trackPicker">
+          <small>Track</small>
+          <select id="trackSel">
+            <option value="itsm">ITSM Triage</option>
+            <option value="hr">HR</option>
+            <option value="proc">Procurement</option>
+          </select>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="panel">
+      <h3>Laboratorio</h3>
+      <p>
+        Aqui se fabrica el entregable. Deja evidencia defendible: inventario claro, top 5 con datos,
+        SIPOC cerrado y decision final con restriccion dominante.
+      </p>
+
+      <div class="kpi" style="margin-top:12px">
+        <div class="box"><b>Meta</b><span>10–15 procesos L1 + Top 5 priorizados + 1 SIPOC</span></div>
+        <div class="box"><b>Tip</b><span>En priorizacion: 1 nota observable por fila (volumen, PII, retrabajo...)</span></div>
+        <div class="box"><b>Final</b><span>Genera y descarga .md con AI Log incluido</span></div>
+      </div>
+      <div id="labSavedAt" class="saveStatus">Sin guardar aun.</div>
+      <div class="actions">
+        <button class="btn" id="btnSample" type="button">Cargar ejemplo del track</button>
+        <button class="btn" id="btnClearLab" type="button">Limpiar Lab</button>
+      </div>
+    </section>
+
+    <hr class="sep"/>
+
+    <section class="formRow">
+      <div class="panel">
+        <h3>1) Inventario (L1) — Verbo + Objeto</h3>
+        <label>10–15 procesos, uno por línea</label>
+        <textarea id="inv" placeholder="Ej: Gestionar incidencias&#10;Ej: Dar de alta proveedor&#10;Ej: Gestionar permisos&#10;..."></textarea>
+        <div class="actions">
+          <button class="btn" id="btnNormalizeInv" type="button">Limpiar formato inventario</button>
+        </div>
+        <div class="footerHint">Atajo: si no empieza con verbo, no pasa el filtro.</div>
+        <div id="invHint" class="inlineHint">Pendiente de validar.</div>
+      </div>
+
+      <div class="panel">
+        <h3>2) Priorización — Top 5</h3>
+        <label>Formato (1 por línea): Proceso | Impacto | Esfuerzo | Riesgo | Score | Nota</label>
+        <textarea id="prio" placeholder="Gestionar incidencias | 5 | 3 | 3 | -1 | 6000 tickets/mes, retrabajo 25%&#10;Alta proveedor | 4 | 4 | 4 | -4 | lead time alto, compliance&#10;..."></textarea>
+        <div class="actions">
+          <button class="btn" id="btnNormalizePrio" type="button">Auto-formatear + recalcular score</button>
+        </div>
+        <div class="footerHint">
+          Usa una sola formula. Recomendado: Score = Impacto - Esfuerzo - Riesgo.
+        </div>
+        <div id="prioHint" class="inlineHint">Pendiente de validar.</div>
+      </div>
+    </section>
+
+    <hr class="sep"/>
+
+    <section class="panel">
+      <h3>3) SIPOC — contrato del proceso ganador</h3>
+      <label>Completa Suppliers / Inputs / Process (4–6 pasos) / Outputs / Customers</label>
+      <textarea id="sipoc" placeholder="Suppliers: ...&#10;Inputs: ... (PII: sí/no)&#10;Process: 1) ... 2) ... 3) ... 4) ...&#10;Outputs: ...&#10;Customers: ..."></textarea>
+      <div class="footerHint">Asegura trigger, output y customer claros.</div>
+      <div id="sipocHint" class="inlineHint">Pendiente de validar.</div>
+    </section>
+
+    <hr class="sep"/>
+
+    <section class="panel">
+      <h3>4) Decisión final defendible</h3>
+      <div class="formGrid">
+        <div>
+          <label>Proceso ganador</label>
+          <input id="winner" type="text" placeholder="Ej: Gestionar incidencias (triage)"/>
+        </div>
+        <div>
+          <label>Restricción dominante</label>
+          <input id="restriction" type="text" placeholder="Ej: PII alta / auditoria / criticidad"/>
+        </div>
+      </div>
+      <label>Criterio 1 (dato o condición observable)</label>
+      <input id="crit1" type="text" placeholder="Ej: alto volumen mensual + retrabajo frecuente"/>
+      <label>Criterio 2 (dato o condición observable)</label>
+      <input id="crit2" type="text" placeholder="Ej: impacto en SLA y quejas de usuario"/>
+      <label>Trade-off principal</label>
+      <input id="tradeoff" type="text" placeholder="Ej: se gana velocidad pero aumenta control manual en casos sensibles"/>
+      <div id="decisionHint" class="inlineHint">Pendiente de validar.</div>
+    </section>
+
+    <hr class="sep"/>
+
+    <section class="panel">
+      <h3>5) AI Log (obligatorio)</h3>
+      <label>Herramienta / modelo</label>
+      <input id="aiTool" type="text" placeholder="Ej: ChatGPT (GPT-5)"/>
+      <label>Objetivo del prompt</label>
+      <input id="aiObjective" type="text" placeholder="Ej: generar opciones L1 y auditar coherencia"/>
+      <label>Prompt usado (3-8 lineas)</label>
+      <textarea id="aiPrompt" placeholder="Pega aqui el prompt principal..."></textarea>
+      <label>Que devolvio (resumen 2-4 lineas)</label>
+      <textarea id="aiReturned" placeholder="Resumen de la respuesta de IA..."></textarea>
+      <label>Que cambie yo (2-3 bullets)</label>
+      <textarea id="aiChanged" placeholder="- ajuste 1&#10;- ajuste 2&#10;- ajuste 3"></textarea>
+      <label>Que verifique (2 checks)</label>
+      <textarea id="aiVerified" placeholder="- SIPOC con customers y outputs claros&#10;- Score consistente en todas las filas"></textarea>
+      <div id="aiHint" class="inlineHint">Pendiente de validar.</div>
+    </section>
+
+    <hr class="sep"/>
+
+    <section class="panel">
+      <h3>6) Checklist de calidad (automatico)</h3>
+      <ul id="qaList" class="qaList"></ul>
+      <div class="actions">
+        <button class="btn primary" id="btnExport" type="button">Generar Markdown</button>
+        <button class="btn" id="btnDownload" type="button">Descargar .md</button>
+      </div>
+    </section>
+
+    <hr class="sep"/>
+
+    <section class="panel">
+      <h3>Salida (Markdown)</h3>
+      <label>Se genera aquí (puedes copiar/pegar o descargar)</label>
+      <textarea id="mdOut" placeholder="Aquí aparecerá el Markdown exportable..."></textarea>
+      <div class="footerHint">Incluye inventario, priorizacion, SIPOC, decision y AI Log listo para entregar.</div>
+    </section>
+  </main>
+
+  <div id="gateModal" class="modalOverlay" aria-hidden="true">
+    <div class="modalCard" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+      <h3 id="gateTitle">Faltan elementos obligatorios antes de descargar</h3>
+      <p>Completa estos puntos criticos del rubric para evitar una entrega incompleta:</p>
+      <ul id="gateList" class="qaList"></ul>
+      <div class="actions">
+        <button class="btn primary" id="gateClose" type="button">Entendido</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>
