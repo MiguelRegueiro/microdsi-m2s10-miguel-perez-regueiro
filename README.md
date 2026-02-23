@@ -2,6 +2,10 @@
 
 Mini web estatica para el proyecto MicroDSI (M2-S10), con flujo completo de trabajo y exportacion final en Markdown.
 
+## Live Demo
+
+[Live Static Site](https://miguelregueiro.github.io/microdsi-m2s10-miguel-perez-regueiro/)
+
 ## Resumen
 
 La aplicacion cubre las 4 paginas del proyecto:
